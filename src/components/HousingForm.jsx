@@ -54,11 +54,11 @@ const HousingForm = ({ onClose }) => {
     setFormData(prev => ({ ...prev, [field]: Math.max(0, prev[field] - 1) }));
   };
 
-  const nextStep = () => {
+  const nextStep = async () => {
     if (currentStep < 3) {
       setCurrentStep(currentStep + 1);
     } else {
-      console.log('Form completed:', formData);
+      await saveForm();
       onClose();
     }
   };
@@ -69,8 +69,19 @@ const HousingForm = ({ onClose }) => {
     }
   };
 
-  const saveForm = () => {
-    console.log('Form saved:', formData);
+  const saveForm = async () => {
+    try {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/housing`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+  
+      if (!res.ok) throw new Error('Failed to save housing form');
+      console.log('Housing form saved successfully');
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   if (currentStep === 0) {

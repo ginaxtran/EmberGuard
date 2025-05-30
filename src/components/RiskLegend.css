@@ -1,0 +1,60 @@
+/* legend */
+
+.legend-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  
+  .legend-sheet {
+    background: white;
+    width: 100%;
+    max-height: 90%;
+    border-radius: 24px 24px 0 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .legend-header {
+    position: sticky;
+    top: 0;
+    background: white;
+    padding: 16px 20px;
+    border-bottom: 1px solid #eee;
+    z-index: 1;
+  }
+  
+  .legend-content {
+    padding: 20px;
+    overflow-y: auto;
+  }
+  
+  .legend-entry {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  
+  .dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 6px;
+  }
+  
+  .sheet-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #333;
+    padding: 0;
+    margin-left: auto;
+    line-height: 1;
+  }
+  

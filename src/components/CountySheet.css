@@ -1,0 +1,97 @@
+.sheet-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.3);
+    z-index: 999;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  
+  .sheet {
+    background: white;
+    width: 100%;
+    max-width: 500px;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 -2px 20px rgba(0,0,0,0.15);
+    animation: slideUp 0.3s ease-out;
+    position: relative;
+  }
+  
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+  
+  .sheet-handle {
+    width: 48px;
+    height: 6px;
+    background: #ccc;
+    border-radius: 3px;
+    margin: 0 auto 16px;
+  }
+  
+  .sheet-close {
+    position: absolute;
+    right: 16px;
+    top: 16px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+  }
+  
+  .section {
+    margin-bottom: 20px;
+  }
+  
+  .risk-label {
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+  .risk-label.minimal { color: green; }
+  .risk-label.low { color: #84b5ce; }
+  .risk-label.moderate { color: orange; }
+  .risk-label.high { color: red; }
+  .risk-label.extreme { color: darkred; }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+    margin: 24px 0;
+  }
+  
+  .stat-card {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    text-align: left;
+  }
+  
+  .stat-card h5 {
+    font-size: 0.9rem;
+    color: #6b7280;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  .stat-value {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #111827;
+  }
+  
+  .stat-sub {
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin-top: 4px;
+  }
+  

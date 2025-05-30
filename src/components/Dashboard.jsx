@@ -27,7 +27,7 @@ const Dashboard = ({ userMode = 'guest' }) => {
         {renderCurrentPage()}
       </div>
 
-      <nav className="bottom-navigation d-flex justify-content-around align-items-center">
+      <nav className="bottom-navigation d-flex justify-content-around align-items-center" >
         <button
           className={`nav-item d-flex flex-column align-items-center gap-1 ${activePage === 'alerts' ? 'active' : ''}`}
           onClick={() => setActivePage('alerts')}

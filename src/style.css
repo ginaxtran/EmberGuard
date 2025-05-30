@@ -352,6 +352,14 @@
   MAP PAGE
 */
 
+#map {
+  position: absolute;
+  bottom: 72px;
+  left: 0;
+  right: 0;
+  z-index: 1;
+}
+
 .map-page {
   height: 100vh;
   background: #f8fafc;
@@ -369,6 +377,29 @@
   border-bottom: 1px solid rgba(229, 231, 235, 0.5);
 }
 
+.county-popup {
+  position: fixed;
+  bottom: 80px;
+  left: 20px;
+  right: 20px;
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  z-index: 1000;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.loading-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 999;
+  background: rgba(255, 255, 255, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 /* Mobile */
 @media (max-width: 576px) {
   .app-title {
@@ -489,3 +520,49 @@
     height: 48px;
   }
 }
+
+.info-float-btn {
+  position: fixed;
+  bottom: 120px;
+  left: 16px;
+  z-index: 50;
+  background: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 10px;
+  font-size: 16px;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  transition: background 0.2s;
+}
+
+.info-float-btn:hover {
+  background: #f3f4f6;
+}
+
+.goto-float-btn {
+  position: fixed;
+  bottom: 200px;
+  left: 16px;
+  z-index: 999;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 8px;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  transition: background 0.2s;
+}
+
+.goto-float-btn:hover {
+  background: #f3f4f6;
+}
+

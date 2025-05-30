@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Temporary Housing Form</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="form-page">
+    <button onclick="history.back()" class="back-btn">← Back</button>
+    <h1>Temporary Housing Form</h1>
+
+    <form id="housing-form">
+      <input type="number" name="adults" placeholder="Adults" required />
+      <input type="number" name="children" placeholder="Children" />
+      <input type="number" name="infants" placeholder="Infants" />
+      <input type="number" name="pets" placeholder="Pets" />
+      <input type="text" name="accessibilityNeeds" placeholder="Accessibility needs" />
+      <input type="text" name="stayLength" placeholder="Stay length (week/month/flexible)" />
+      <input type="date" name="stayStartDate" required />
+      <input type="email" name="email" placeholder="Your email" required />
+      <textarea name="extraNotes" placeholder="Anything else?"></textarea>
+      <label>
+        <input type="checkbox" name="sameEmail" />
+        Use this email to receive housing options
+      </label>
+
+      <button type="submit">Submit</button>
+    </form>
+  </main>
+
+  <script src="housing.js"></script>
+</body>
+</html>

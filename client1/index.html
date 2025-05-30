@@ -2,55 +2,67 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1"> <!-- mobile scaling -->
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>WA Wildfire Map</title>
-  <link
-    rel="stylesheet"
-    href="node_modules/leaflet/dist/leaflet.css"
-  > <!-- Leaflet CSS :contentReference[oaicite:3]{index=3} -->
+  <link rel="stylesheet" href="node_modules/leaflet/dist/leaflet.css">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.0/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.0/dist/leaflet.js"></script>
 </head>
 <body>
-  <div class="search-wrapper">
-    <div class="search-container">
-      <input
-        type="search"
-        id="search-input"
-        placeholder="Search city or ZIP..."
-        aria-label="Search map"
-      />
-      <button id="search-btn">🔍</button>
+  <div id="map-page" class="page">
+    <div id="map-ui">
+      <div class="search-wrapper">
+        <div class="search-bar">
+          <span class="search-icon">🔍</span>
+          <input type="search" id="search-input" placeholder="Search by location" aria-label="Search map" />
+        </div>
+        <button id="locate-btn" class="locate-btn">📍</button>
+      </div>
+  
+      <div class="legend">
+        <div class="legend-item"><span class="legend-circle minimal"></span> Minimal</div>
+        <div class="legend-item"><span class="legend-circle low"></span> Low</div>
+        <div class="legend-item"><span class="legend-circle moderate"></span> Moderate</div>
+        <div class="legend-item"><span class="legend-circle high"></span> High</div>
+        <div class="legend-item"><span class="legend-circle extreme"></span> Extreme</div>
+      </div>
     </div>
-    <button id="help-btn" class="help-btn">?</button>
-  </div>
-
-  <div id="map"></div>
-
-  <!-- legend -->
-  <div class="legend">
-    <div class="legend-item">
-      <span class="legend-circle low"></span>
-      <span class="legend-text">Low</span>
-    </div>
-    <div class="legend-item">
-      <span class="legend-circle moderate"></span>
-      <span class="legend-text">Moderate</span>
-    </div>
-    <div class="legend-item">
-      <span class="legend-circle high"></span>
-      <span class="legend-text">High</span>
+  
+    <div id="map">
     </div>
   </div>
+  
+  <div id="prep-page" class="page hidden"></div>
+
+  <div id="alerts-page" class="page hidden">🚨 Alerts coming soon...</div>
+
+  <div id="profile-page" class="page hidden">👤 User profile features coming soon</div>
 
   <div class="navbar">
-    <button id="tab-map" class="active">Map</button>
-    <button id="tab-resources">Resources</button>
+    <button id="tab-map" class="tab-btn">
+      <div class="tab-icon">🗺️</div>
+      <div class="tab-label">Map</div>
+    </button>
+    
+    <button id="tab-alerts" class="tab-btn">
+      <div class="tab-icon">🚨</div>
+      <div class="tab-label">Alerts</div>
+    </button>
+    
+    <button id="tab-prep" class="tab-btn">
+      <div class="tab-icon">🛠️</div>
+      <div class="tab-label">Preparation</div>
+    </button>
+    
+    <button id="tab-profile" class="tab-btn">
+      <div class="tab-icon">👤</div>
+      <div class="tab-label">Profile</div>
+    </button>
   </div>
 
-  <!-- bottom sheet -->
-  <div id="sheet" class="sheet">
+  <div id="sheet" class="sheet hidden">
     <div id="sheet-handle"></div>
-    <div id="sheet-content"></div>
   </div>
 
   <script src="node_modules/leaflet/dist/leaflet.js"></script>
