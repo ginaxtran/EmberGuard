@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   ChevronRightIcon,
   ChevronLeftIcon,
@@ -10,6 +11,11 @@ import {
 const Profile = () => {
   const [subpage, setSubpage] = useState("main");
   const [locationEnabled, setLocationEnabled] = useState(true);
+  const navigate = useNavigate();
+
+  const handleSignInClick = () => {
+    navigate('/');
+  };
 
   useEffect(() => {
     const saved = localStorage.getItem("locationEnabled");
@@ -54,10 +60,10 @@ const Profile = () => {
               <ChevronRightIcon />
             </div>
 
-            <div className="profile-item">
+            <div className="profile-item" onClick={handleSignInClick}>
               <div className="label">
                 <LogOutIcon />
-                <span>Sign in</span>
+                <span>Sign In</span>
               </div>
             </div>
           </div>
