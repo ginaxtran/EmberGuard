@@ -84,9 +84,19 @@ const EmergencyChecklistResult = ({ formData, onClose }) => {
       <div className="pt-5 px-4 pb-3 border-bottom d-flex justify-content-center align-items-center position-relative">
         <h1 className="fw-bold mb-0" style={{ fontSize: '1.5rem' }}>Emergency Checklist</h1>
         <button
-          className="btn-close position-absolute end-0"
           onClick={onClose}
-          style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer' }}>
+          className="position-absolute"
+          style={{
+            top: '2.5rem',
+            right: '1.25rem',
+            background: 'none',
+            border: 'none',
+            fontSize: '1.5rem',
+            cursor: 'pointer',
+            padding: 0,
+            lineHeight: 1,
+          }}
+        >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18 6L6 18M6 6L18 18" />
           </svg>

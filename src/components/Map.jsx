@@ -1,8 +1,10 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
 const Map = ({ setSelectedCounty, setLoadingCounty }) => {
+  const [mapLoading, setMapLoading] = useState(true);
+
   useEffect(() => {
     const map = L.map('map').setView([47.5, -120.5], 7);
 
@@ -59,7 +61,6 @@ const Map = ({ setSelectedCounty, setLoadingCounty }) => {
       map._userLocationLayers.push(ring1, ring2, ring3, dot);
     });
 
-    // 📍 Handle search pin fly-to
     let searchMarker;
 
     const handleFlyTo = (e) => {
@@ -83,7 +84,6 @@ const Map = ({ setSelectedCounty, setLoadingCounty }) => {
 
     window.addEventListener("flyToLocation", handleFlyTo);
 
-    // 🧭 Handle user location fly-to
     const handleFlyToUser = () => {
       if (map._userLatLng) {
         map.flyTo(map._userLatLng, 12, { animate: true });
@@ -94,12 +94,10 @@ const Map = ({ setSelectedCounty, setLoadingCounty }) => {
 
     window.addEventListener("flyToUser", handleFlyToUser);
 
-    // 🗺️ Load base map
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
-    // 🔥 Load wildfire risk polygons
     fetch(`${import.meta.env.VITE_BACKEND_URL}/api/counties`)
       .then((res) => res.json())
       .then((geojson) => {
@@ -126,9 +124,16 @@ const Map = ({ setSelectedCounty, setLoadingCounty }) => {
             });
           },
         }).addTo(map);
+
+        setTimeout(() => {
+          setMapLoading(false);
+        }, 2000);
+      })
+      .catch(err => {
+        console.error("❌ Error loading geojson:", err);
+        setMapLoading(false);
       });
 
-    // 🧹 Cleanup
     return () => {
       map.remove();
       window.removeEventListener("flyToLocation", handleFlyTo);
@@ -137,7 +142,15 @@ const Map = ({ setSelectedCounty, setLoadingCounty }) => {
   }, []);
 
   return (
-    <div id="map" style={{ height: '100vh', width: '100%' }}></div>
+    <>
+      {mapLoading && (
+        <div className="map-loading-overlay">
+          <div className="spinner-border text-secondary" role="status" />
+          <p className="mt-2 text-muted">Loading risk levels...</p>
+        </div>
+      )}
+      <div id="map" style={{ height: '100vh', width: '100%' }}></div>
+    </>
   );
 };
 

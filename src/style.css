@@ -406,6 +406,30 @@
   align-items: center;
   justify-content: center;
 }
+
+.map-loading-overlay {
+  position: absolute;
+  top: 160px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  font-size: 0.95rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.map-loading-overlay .spinner-border {
+  width: 2rem;
+  height: 2rem;
+}
+
+
 /* Mobile */
 @media (max-width: 576px) {
   .app-title {
