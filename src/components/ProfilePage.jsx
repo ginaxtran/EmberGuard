@@ -1,110 +1,118 @@
+import React, { useState, useEffect } from "react";
 import {
   BellIcon,
   ChevronRightIcon,
+  ChevronLeftIcon,
   LockIcon,
   LogOutIcon,
-  MapIcon,
   MapPinIcon,
   UserIcon,
- } from "lucide-react";
- import React from "react";
- 
- 
- 
- 
- // Navigation items data
- const navigationItems = [
-  {
-    id: 1,
-    label: "Alerts",
-    icon: <BellIcon className="w-6 h-6" />,
-    isActive: true,
-  },
-  {
-    id: 2,
-    label: "Prepare",
-    icon: (
-      <img
-        className="w-[19px] h-[19px]"
-        alt="Prepare icon"
-        src="https://c.animaapp.com/mb9wldk1n5qqZL/img/group.png"
-      />
-    ),
-    isActive: false,
-  },
-  {
-    id: 3,
-    label: "Map",
-    icon: <MapIcon className="w-6 h-6" />,
-    isActive: false,
-  },
-  {
-    id: 4,
-    label: "Profile",
-    icon: <UserIcon className="w-6 h-6" />,
-    isActive: false,
-  }
- ];
- 
- 
- // Settings items data
- const settingsItems = [
-  {
-    id: 1,
-    label: "Personal information",
-    icon: <UserIcon className="w-6 h-6" />,
-  },
-  { id: 2, label: "Login & security", icon: <LockIcon className="w-6 h-6" /> },
-  { id: 3, label: "Notifications", icon: <BellIcon className="w-6 h-6" /> },
-  {
-    id: 4,
-    label: "Privacy & sharing",
-    icon: <MapPinIcon className="w-6 h-6" />,
-  },
-  { id: 5, label: "Log out", icon: <LogOutIcon className="w-6 h-6" /> },
- ];
- 
- 
- export const Profile = () => {
+} from "lucide-react";
+
+const Profile = () => {
+  const [subpage, setSubpage] = useState("main");
+  const [locationEnabled, setLocationEnabled] = useState(true);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("locationEnabled");
+    setLocationEnabled(saved !== "false");
+  }, []);
+
+  const toggleLocation = () => {
+    const newValue = !locationEnabled;
+    setLocationEnabled(newValue);
+    localStorage.setItem("locationEnabled", newValue);
+  };
+
   return (
     <div className="profile-page">
-  <div className="profile-header">
-    <img src="/avatar-placeholder.png" alt="Profile" className="profile-avatar" />
-    <div className="profile-info">
-      <div className="name">Charlie Becket</div>
-      <div className="view-profile">View profile</div>
-    </div>
-  </div>
+      {subpage === "main" && (
+        <>
+          <div className="profile-header">
+            <img
+              src="/avatar-placeholder.png"
+              alt="Profile"
+              className="profile-avatar"
+            />
+            <div className="profile-info">
+              <div className="name">Charlie Becket</div>
+              <div className="view-profile">View profile</div>
+            </div>
+          </div>
 
-  <div className="profile-section">
-    <div className="profile-item">
-      <div className="label">
-        <UserIcon />
-        <span>Personal Information</span>
-      </div>
-      <ChevronRightIcon />
-    </div>
+          <div className="profile-section">
+            <div className="profile-item">
+              <div className="label">
+                <UserIcon />
+                <span>Personal Information</span>
+              </div>
+              <ChevronRightIcon />
+            </div>
 
-    <div className="profile-item">
-      <div className="label">
-        <LockIcon />
-        <span>Password & Security</span>
-      </div>
-      <ChevronRightIcon />
-    </div>
+            <div className="profile-item" onClick={() => setSubpage("password")}>
+              <div className="label">
+                <LockIcon />
+                <span>Password & Security</span>
+              </div>
+              <ChevronRightIcon />
+            </div>
 
-    <div className="profile-item">
-      <div className="label">
-        <LogOutIcon />
-        <span>Log Out</span>
-      </div>
-    </div>
-  </div>
-</div>
+            <div className="profile-item">
+              <div className="label">
+                <BellIcon />
+                <span>Notifications</span>
+              </div>
+              <ChevronRightIcon />
+            </div>
 
+            <div className="profile-item">
+              <div className="label">
+                <MapPinIcon />
+                <span>Privacy & Sharing</span>
+              </div>
+              <ChevronRightIcon />
+            </div>
+
+            <div className="profile-item">
+              <div className="label">
+                <LogOutIcon />
+                <span>Log Out</span>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {subpage === "password" && (
+        <div className="pt-16 px-4">
+          <div className="mb-10 flex items-center gap-2">
+            <ChevronLeftIcon
+              className="w-6 h-6 text-brand cursor-pointer"
+              onClick={() => setSubpage("main")}
+            />
+            <h2 className="text-xl font-semibold text-brand ml-1 mt-4">
+              Password & Security
+            </h2>
+          </div>
+
+          <div className="profile-item">
+            <div className="label">
+              <span>Allow Location Access</span>
+            </div>
+            <label className="relative inline-flex items-center cursor-pointer ml-auto">
+              <input
+                type="checkbox"
+                checked={locationEnabled}
+                onChange={toggleLocation}
+                className="sr-only peer"
+              />
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-offset-2 peer-focus:ring-blue-300 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600" />
+            </label>
+          </div>
+        </div>
+      )}
+    </div>
   );
- };
- 
- 
- export default Profile;
- 
+};
+
+export default Profile;

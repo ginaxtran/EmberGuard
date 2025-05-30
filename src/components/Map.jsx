@@ -6,7 +6,10 @@ const Map = ({ setSelectedCounty, setLoadingCounty }) => {
   useEffect(() => {
     const map = L.map('map').setView([47.5, -120.5], 7);
 
-    map.locate({ setView: false, maxZoom: 12 });
+    const isLocationAllowed = localStorage.getItem("locationEnabled") !== "false";
+    if (isLocationAllowed) {
+      map.locate({ setView: false, maxZoom: 12 });
+    }
 
     map.on('locationfound', (e) => {
       const { latlng } = e;
