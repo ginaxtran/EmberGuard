@@ -8,8 +8,8 @@ import {
   UserIcon,
 } from "lucide-react";
 import React from "react";
-import { Card, CardContent } from "../../components/ui/card";
-import { Separator } from "../../components/ui/separator";
+// import { Card, CardContent } from "../../components/ui/card";
+// import { Separator } from "../../components/ui/separator";
 
 // Navigation items data
 const navigationItems = [
