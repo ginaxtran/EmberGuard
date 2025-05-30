@@ -157,6 +157,12 @@
   transition: all 0.2s ease;
 }
 
+.uniform-checkbox {
+  width: 18px;
+  height: 18px;
+  accent-color: #84B5CE;
+}
+
 .remember-me input[type="checkbox"]:checked + .checkmark {
   background-color: #84B5CE;
   border-color: #84B5CE;

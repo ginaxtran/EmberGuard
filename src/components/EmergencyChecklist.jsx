@@ -17,12 +17,15 @@ const EmergencyChecklist = ({ onClose }) => {
     buildingType: ''
   });
 
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
     const saved = localStorage.getItem('savedChecklistData');
     if (saved) {
       setFormData(JSON.parse(saved));
       setCurrentStep(4);
     }
+    setIsLoading(false);
   }, []);
 
   const updateFormData = (field, value) => {
@@ -58,6 +61,7 @@ const EmergencyChecklist = ({ onClose }) => {
     return <EmergencyChecklistResult formData={formData} onClose={onClose} />;
   }
 
+  if (isLoading) return null;
   return (
     <div className="position-fixed top-0 start-0 end-0 bottom-0 bg-white d-flex flex-column" style={{ zIndex: 1002 }}>
       <div className="pt-5 px-4 pb-3 border-bottom d-flex justify-content-between align-items-center">

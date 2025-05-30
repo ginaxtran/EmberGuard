@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import HousingForm from './HousingForm';
 import EmergencyChecklist from './EmergencyChecklist';
 
-console.log("🔥 PreparePage mounted");
-
 const PreparePage = () => {
   const [showHousingForm, setShowHousingForm] = useState(false);
   const [showChecklistForm, setShowChecklistForm] = useState(false);
@@ -18,6 +16,8 @@ const PreparePage = () => {
   const handleResubmit = (itemType) => {
     if (itemType === 'emergency checklist') {
       localStorage.removeItem('savedChecklistData');
+      localStorage.removeItem('checkedItems'); // ⬅️ NEW
+      localStorage.removeItem('customItems');  // ⬅️ NEW
       setChecklistKey(prev => prev + 1);
       setShowChecklistForm(true);
     } else if (itemType === 'temporary housing form') {
@@ -40,7 +40,6 @@ const PreparePage = () => {
   const handleCloseChecklistForm = () => {
     setShowChecklistForm(false);
   };
-  console.log("🧪 showChecklistForm is", showChecklistForm);
   return (
     <>
       <div className="h-100 d-flex flex-column bg-white overflow-hidden">
@@ -127,7 +126,7 @@ const PreparePage = () => {
 
       {showHousingForm && <HousingForm onClose={handleCloseHousingForm} />}
       {showChecklistForm && (
-        <EmergencyChecklist key={Date.now()} onClose={handleCloseChecklistForm} />
+        <EmergencyChecklist onClose={handleCloseChecklistForm} />
       )}
     </>
   );
