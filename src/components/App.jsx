@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Register from './Register';
 import Login from './Login';
 import Onboarding from './Onboarding';
-import Dashboard from './Dashboard';
-import Profilefrom from './ProfilePage';
 
 function App() {
   const [showRegister, setShowRegister] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
-  const [isInApp, setIsInApp] = useState(false);
   const [userMode, setUserMode] = useState(null);
+  const navigate = useNavigate();
 
   const handleCloseRegister = () => {
     setShowRegister(false);
@@ -46,19 +45,15 @@ function App() {
 
   const handleOnboardingSkip = () => {
     setShowOnboarding(false);
-    setIsInApp(true);
+    navigate('/dashboard?page=map');
     console.log('Skipping onboarding - entering main app as guest');
   };
 
   const handleOnboardingNext = () => {
     setShowOnboarding(false);
-    setIsInApp(true);
+    navigate('/dashboard?page=map');
     console.log('Onboarding completed - entering main app as guest');
   };
-
-  if (isInApp) {
-    return <Dashboard userMode={userMode} />;
-  }
 
   return (
     <div className="min-vh-100 bg-white d-flex align-items-center justify-content-center p-4">

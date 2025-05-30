@@ -57,7 +57,7 @@ const Profile = () => {
             <div className="profile-item">
               <div className="label">
                 <LogOutIcon />
-                <span>Log Out</span>
+                <span>Sign in</span>
               </div>
             </div>
           </div>

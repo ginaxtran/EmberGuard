@@ -5,6 +5,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import './style.css';
 
 import App from './components/App.jsx';
+import Dashboard from './components/Dashboard.jsx';
 import HousingDashboard from './components/HousingDashboard.jsx';
 
 const CLIENT_ID = "412789806996-a98k10rkgae4005vr0hq7i6l2mgforhh.apps.googleusercontent.com"
@@ -15,10 +16,10 @@ createRoot(document.getElementById('root')).render(
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<App />} />
-          <Route path="/dashboard" element={<HousingDashboard />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/admin/housing" element={<HousingDashboard />} />
         </Routes>
       </BrowserRouter>
-      </GoogleOAuthProvider>
+    </GoogleOAuthProvider>
   </StrictMode>
-
 );

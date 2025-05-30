@@ -1,11 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import MapPage from './MapPage';
 import AlertsPage from './AlertsPage';
 import PreparePage from './PreparePage';
 import ProfilePage from './ProfilePage';
 
 const Dashboard = ({ userMode = 'guest' }) => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [activePage, setActivePage] = useState('map');
+
+  // Initialize active page from URL parameters or default to 'map'
+  useEffect(() => {
+    const pageFromUrl = searchParams.get('page') || 'map';
+    setActivePage(pageFromUrl);
+  }, [searchParams]);
+
+  // Update URL when page changes
+  const handlePageChange = (page) => {
+    setActivePage(page);
+    setSearchParams({ page });
+  };
 
   const renderCurrentPage = () => {
     switch (activePage) {
@@ -16,7 +30,7 @@ const Dashboard = ({ userMode = 'guest' }) => {
       case 'map':
         return <MapPage />;
       case 'profile':
-        return <ProfilePage/>;
+        return <ProfilePage />;
       default:
         return <MapPage />;
     }
@@ -28,10 +42,10 @@ const Dashboard = ({ userMode = 'guest' }) => {
         {renderCurrentPage()}
       </div>
 
-      <nav className="bottom-navigation d-flex justify-content-around align-items-center" >
+      <nav className="bottom-navigation d-flex justify-content-around align-items-center">
         <button
           className={`nav-item d-flex flex-column align-items-center gap-1 ${activePage === 'alerts' ? 'active' : ''}`}
-          onClick={() => setActivePage('alerts')}
+          onClick={() => handlePageChange('alerts')}
         >
           <img
             src="/navbell.png"
@@ -48,7 +62,7 @@ const Dashboard = ({ userMode = 'guest' }) => {
 
         <button
           className={`nav-item d-flex flex-column align-items-center gap-1 ${activePage === 'prepare' ? 'active' : ''}`}
-          onClick={() => setActivePage('prepare')}
+          onClick={() => handlePageChange('prepare')}
         >
           <img
             src="/navprepare.png"
@@ -65,7 +79,7 @@ const Dashboard = ({ userMode = 'guest' }) => {
 
         <button
           className={`nav-item d-flex flex-column align-items-center gap-1 ${activePage === 'map' ? 'active' : ''}`}
-          onClick={() => setActivePage('map')}
+          onClick={() => handlePageChange('map')}
         >
           <img
             src="/navmap.png"
@@ -82,7 +96,7 @@ const Dashboard = ({ userMode = 'guest' }) => {
 
         <button
           className={`nav-item d-flex flex-column align-items-center gap-1 ${activePage === 'profile' ? 'active' : ''}`}
-          onClick={() => setActivePage('profile')}
+          onClick={() => handlePageChange('profile')}
         >
           <img
             src="/navprofile.png"
