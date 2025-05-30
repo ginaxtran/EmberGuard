@@ -3,6 +3,7 @@ import Register from './Register';
 import Login from './Login';
 import Onboarding from './Onboarding';
 import Dashboard from './Dashboard';
+import Profilefrom from './ProfilePage';
 
 function App() {
   const [showRegister, setShowRegister] = useState(false);

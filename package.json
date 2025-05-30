@@ -11,7 +11,11 @@
   },
   "dependencies": {
     "bootstrap": "^5.3.6",
+<<<<<<< HEAD
     "framer-motion": "^12.15.0",
+=======
+    "lucide-react": "^0.511.0",
+>>>>>>> f60d81f373f4c20f64b4b0895e87c02d705cbf87
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.6.1"
