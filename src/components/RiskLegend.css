@@ -21,8 +21,9 @@
   }
   
   .legend-header {
+    padding-top: 20px;
     position: sticky;
-    top: 0;
+    top: 10px;
     background: white;
     padding: 16px 20px;
     border-bottom: 1px solid #eee;
