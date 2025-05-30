@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import MapPage from './MapPage';
 import AlertsPage from './AlertsPage';
 import PreparePage from './PreparePage';
+import ProfilePage from './ProfilePage';
 
 const Dashboard = ({ userMode = 'guest' }) => {
   const [activePage, setActivePage] = useState('map');
@@ -15,7 +16,7 @@ const Dashboard = ({ userMode = 'guest' }) => {
       case 'map':
         return <MapPage />;
       case 'profile':
-        return <div className="d-flex align-items-center justify-content-center h-100 text-muted fs-4 fw-medium">Profile Page (Coming Soon)</div>;
+        return <ProfilePage/>;
       default:
         return <MapPage />;
     }
