@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
 import {
-  BellIcon,
   ChevronRightIcon,
   ChevronLeftIcon,
   LockIcon,
   LogOutIcon,
-  MapPinIcon,
   UserIcon,
 } from "lucide-react";
 
@@ -30,13 +28,12 @@ const Profile = () => {
         <>
           <div className="profile-header">
             <img
-              src="/avatar-placeholder.png"
+              src="/profilepic.png"
               alt="Profile"
               className="profile-avatar"
             />
             <div className="profile-info">
-              <div className="name">Charlie Becket</div>
-              <div className="view-profile">View profile</div>
+              <div className="name">Guest User</div>
             </div>
           </div>
 
@@ -59,22 +56,6 @@ const Profile = () => {
 
             <div className="profile-item">
               <div className="label">
-                <BellIcon />
-                <span>Notifications</span>
-              </div>
-              <ChevronRightIcon />
-            </div>
-
-            <div className="profile-item">
-              <div className="label">
-                <MapPinIcon />
-                <span>Privacy & Sharing</span>
-              </div>
-              <ChevronRightIcon />
-            </div>
-
-            <div className="profile-item">
-              <div className="label">
                 <LogOutIcon />
                 <span>Log Out</span>
               </div>
@@ -84,7 +65,7 @@ const Profile = () => {
       )}
 
       {subpage === "password" && (
-        <div className="pt-16 px-4">
+        <div className="px-4">
           <div className="mb-10 flex items-center gap-2">
             <ChevronLeftIcon
               className="w-6 h-6 text-brand cursor-pointer"
