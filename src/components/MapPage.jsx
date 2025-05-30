@@ -53,17 +53,6 @@ const MapPage = () => {
               className="form-control form-control-lg search-input-with-icon custom-focus"
             />
           </div>
-          <button className="btn btn-outline-secondary filter-btn">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path 
-                d="M3 6h18M7 12h10m-7 6h4" 
-                stroke="currentColor" 
-                strokeWidth="2" 
-                strokeLinecap="round" 
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
 
         </div>
       </div>
