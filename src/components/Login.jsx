@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import {useGoogleLogin} from '@react-oauth/google';
+import * as jwtDecode from 'jwt-decode';
+import {useNavigate} from "react-router-dom"
 
 const Login = ({ onClose, onSwitchToRegister }) => {
   const [formData, setFormData] = useState({
@@ -9,6 +12,7 @@ const Login = ({ onClose, onSwitchToRegister }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -72,10 +76,20 @@ const Login = ({ onClose, onSwitchToRegister }) => {
     }
   };
 
-  const handleGoogleLogin = () => {
-    console.log('Google login clicked');
-    alert('Google login would be implemented here');
-  };
+  const googleLogin = useGoogleLogin({
+    onSuccess: (credentialResponse) => {
+      try {
+        const userInfo = jwtDecode(credentialResponse.credential);
+        console.log("Google user info:", userInfo);
+        navigate("/dashboard");
+      } catch (error) {
+        console.error("Error decoding Google token:", error);
+      }
+    },
+    onError: () => {
+      console.log("Google login failed");
+    },
+  });
 
   const handleFacebookLogin = () => {
     console.log('Facebook login clicked');
@@ -208,7 +222,7 @@ const Login = ({ onClose, onSwitchToRegister }) => {
             <button 
               type="button"
               className="btn btn-outline-secondary social-btn google-btn d-flex align-items-center justify-content-center gap-3"
-              onClick={handleGoogleLogin}
+              onClick={() => googleLogin()}
             >
               <svg width="20" height="20" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
