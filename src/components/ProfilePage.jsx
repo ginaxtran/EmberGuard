@@ -1,109 +1,180 @@
-import React from 'react';
+import {
+  BellIcon,
+  ChevronRightIcon,
+  LockIcon,
+  LogOutIcon,
+  MapIcon,
+  MapPinIcon,
+  UserIcon,
+} from "lucide-react";
+import React from "react";
+import { Card, CardContent } from "../../components/ui/card";
+import { Separator } from "../../components/ui/separator";
 
-// Icon: Bell Outline
-const IconOutlineBell = ({ className }) => (
-  <svg className={className} fill="none" height="24" viewBox="0 0 24 24" width="24">
-    <path
-      d="M12 3.5C13.5913 3.5 15.1174 4.13214 16.2426 5.25736C17.3679 6.38258 18 7.9087 18 9.5C18 16.5 21 18.5 21 18.5H3C3 18.5 6 16.5 6 9.5C6 7.9087 6.63214 6.38258 7.75736 5.25736C8.88258 4.13214 10.4087 3.5 12 3.5ZM12 3.5V2.5"
-      stroke="#717171" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5"
-    />
-    <path
-      d="M14.5 19C14.3242 19.3031 14.1453 20.5686 12.9978 21.2295C12.6941 21.4044 12.3499 21.4965 11.9995 21.4965C11.6492 21.4965 11.3049 21.4044 11.0013 21.2295C10.1847 20.7592 9.67581 19.3031 9.5 19"
-      stroke="#717171" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5"
-    />
-  </svg>
-);
+// Navigation items data
+const navigationItems = [
+  {
+    id: 1,
+    label: "Alerts",
+    icon: <BellIcon className="w-6 h-6" />,
+    isActive: true,
+  },
+  {
+    id: 2,
+    label: "Prepare",
+    icon: (
+      <img
+        className="w-[19px] h-[19px]"
+        alt="Prepare icon"
+        src="https://c.animaapp.com/mb9wldk1n5qqZL/img/group.png"
+      />
+    ),
+    isActive: false,
+  },
+  {
+    id: 3,
+    label: "Map",
+    icon: <MapIcon className="w-6 h-6" />,
+    isActive: false,
+  },
+  {
+    id: 4,
+    label: "Profile",
+    icon: <UserIcon className="w-6 h-6" />,
+    isActive: false,
+  },
+];
 
-// Icon: Filled Map
-const IconFilledMaps3 = ({ className }) => (
-  <svg className={className} fill="none" height="24" viewBox="0 0 24 24" width="24">
-    <path
-      d="M21.9738 4.30635C21.9313 4.12123 21.851 3.94603 21.7377 3.79082C21.6243 3.63561 21.4802 3.50346 21.3135 3.40195C21.1468 3.29872 20.9603 3.22835 20.765 3.19493C20.5697 3.16151 20.3695 3.1657 20.1759 3.20726L15.2723 4.25611L8.73424 3L3.17688 4.18702C2.84302 4.25727 2.54423 4.43513 2.33015 4.69105C2.11607 4.94697 1.99957 5.26555 2.00003 5.59386V19.3796C1.99849 19.6225 2.0613 19.8618 2.18253 20.0749C2.30377 20.2881 2.47946 20.4681 2.69306 20.598C2.85981 20.7013 3.04624 20.7716 3.24153 20.8051C3.43683 20.8385 3.63709 20.8343 3.83069 20.7927L8.73424 19.7439L15.2723 21L20.8231 19.813C21.157 19.7427 21.4558 19.5649 21.6699 19.3089C21.884 19.053 22.0005 18.7345 22 18.4061V4.62038C21.9989 4.51464 21.9858 4.40933 21.9608 4.30635H21.9738ZM9.71496 18.268L8.72771 18.0796L7.75353 18.2805V4.87788L8.74078 4.67062L9.71496 4.85904V18.2617V18.268ZM16.253 19.1221L15.2658 19.3294L14.2916 19.141V5.73203L15.2789 5.92045L16.253 5.71947H16.2596V19.1221H16.253Z"
-      fill="#0A0A0A"
-    />
-  </svg>
-);
+// Settings items data
+const settingsItems = [
+  {
+    id: 1,
+    label: "Personal information",
+    icon: <UserIcon className="w-6 h-6" />,
+  },
+  { id: 2, label: "Login & security", icon: <LockIcon className="w-6 h-6" /> },
+  { id: 3, label: "Notifications", icon: <BellIcon className="w-6 h-6" /> },
+  {
+    id: 4,
+    label: "Privacy & sharing",
+    icon: <MapPinIcon className="w-6 h-6" />,
+  },
+  { id: 5, label: "Log out", icon: <LogOutIcon className="w-6 h-6" /> },
+];
 
-// TabBar component
-const TabBar = ({ selection }) => {
+export const Profile = () => {
   return (
-    <div className="w-full">
-      <div className="flex items-center justify-around py-2 bg-white shadow-inner">
-        {/* Alerts */}
-        <div className="flex flex-col items-center">
-          <IconOutlineBell className="w-6 h-6" />
-          <span className={`text-xs mt-1 ${selection === "alerts" ? "font-bold text-[#222]" : "text-[#717171]"}`}>Alerts</span>
+    <div className="relative w-full max-w-[393px] h-[852px] bg-white mx-auto">
+      {/* Status Bar */}
+      <div className="flex w-full h-[59px] items-end justify-center backdrop-blur-sm backdrop-brightness-[100%] [-webkit-backdrop-filter:blur(4px)_brightness(100%)]">
+        <div className="flex flex-col items-center justify-center gap-2 pl-2.5 pr-0 pt-0 pb-[3px] relative flex-1 self-stretch">
+          <div className="relative w-[54px] h-[21px] rounded-3xl">
+            <div className="absolute w-[54px] top-px left-0 font-callout-bold font-[number:var(--callout-bold-font-weight)] text-label-colorlightprimary text-[length:var(--callout-bold-font-size)] text-center tracking-[var(--callout-bold-letter-spacing)] leading-[var(--callout-bold-line-height)] whitespace-nowrap [font-style:var(--callout-bold-font-style)]">
+              9:41
+            </div>
+          </div>
         </div>
 
-        {/* Prepare */}
-        <div className="flex flex-col items-center">
-          <img src="https://c.animaapp.com/mb9y7f13hTU61E/img/group-2.png" className="w-[19px] h-[19px]" />
-          <span className={`text-xs mt-1 ${selection === "prepare" ? "font-bold text-[#222]" : "text-[#717171]"}`}>Prepare</span>
+        <div className="inline-flex flex-col items-center justify-center relative self-stretch flex-[0_0_auto]">
+          <div className="relative w-[125px] h-[37px] bg-system-backgrounddark-baseprimary rounded-[100px]">
+            <div className="absolute w-20 h-[37px] top-0 left-0 bg-system-backgrounddark-baseprimary rounded-[100px]" />
+            <div className="absolute w-[37px] h-[37px] top-0 left-[88px] bg-system-backgrounddark-baseprimary rounded-[100px]" />
+          </div>
         </div>
 
-        {/* Map */}
-        <div className="flex flex-col items-center">
-          <IconFilledMaps3 className="w-6 h-6" />
-          <span className={`text-xs mt-1 ${selection === "map" ? "font-bold text-[#222]" : "text-[#717171]"}`}>Map</span>
-        </div>
-
-        {/* Profile */}
-        <div className="flex flex-col items-center">
-          <img
-            src={
-              selection === "profile"
-                ? "https://c.animaapp.com/mb9y7f13hTU61E/img/profile-outline-4.svg"
-                : "https://c.animaapp.com/mb9y7f13hTU61E/img/profile-outline.svg"
-            }
-            className="w-6 h-6"
-          />
-          <span className={`text-xs mt-1 ${selection === "profile" ? "font-bold text-[#222]" : "text-[#717171]"}`}>Profile</span>
+        <div className="flex items-center justify-center gap-2 pl-0 pr-[11px] py-0 relative flex-1 self-stretch">
+          <div className="inline-flex items-start gap-2 relative flex-[0_0_auto]">
+            <img
+              className="relative w-[18px] h-3"
+              alt="Icon mobile signal"
+              src="https://c.animaapp.com/mb9wldk1n5qqZL/img/icon---mobile-signal.svg"
+            />
+            <img
+              className="relative w-[17px] h-[11.83px]"
+              alt="Wifi"
+              src="https://c.animaapp.com/mb9wldk1n5qqZL/img/wifi.svg"
+            />
+            <img
+              className="relative w-[27.4px] h-[13px]"
+              alt="Statusbar battery"
+              src="https://c.animaapp.com/mb9wldk1n5qqZL/img/-statusbar-battery.svg"
+            />
+          </div>
         </div>
       </div>
 
-      <div className="w-[134px] h-[5px] rounded-full bg-[#222] mx-auto mt-2" />
+      {/* Profile Section */}
+      <Card className="w-[344px] mx-6 mt-[132px] border-none shadow-none">
+        <CardContent className="p-0">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="relative w-[61px] h-[60.16px] bg-[url(https://c.animaapp.com/mb9wldk1n5qqZL/img/ellipse-9.png)] bg-cover bg-[50%_50%]" />
+              <div className="flex flex-col w-[165px] h-[60px] justify-center gap-2.5">
+                <div className="h-4 [font-family:'Airbnb_Cereal_App-Book',Helvetica] font-normal text-black text-xl tracking-[0] leading-[26px] whitespace-nowrap">
+                  Charlie Becket
+                </div>
+                <div className="h-[18px] [font-family:'Airbnb_Cereal_App-Book',Helvetica] font-normal text-[#9d9999] text-sm tracking-[0] leading-[18.2px] whitespace-nowrap">
+                  Show profile
+                </div>
+              </div>
+            </div>
+            <ChevronRightIcon className="w-6 h-6" />
+          </div>
+        </CardContent>
+      </Card>
+      <Separator className="w-[344px] mx-6 mt-2" />
+
+      {/* Settings Header */}
+      <div className="flex flex-col w-[134px] items-start justify-center gap-8 mt-[284px] ml-6 absolute">
+        <div className="self-stretch mt-[-1.00px] [font-family:'Airbnb_Cereal_App-Medium',Helvetica] font-medium text-[#003049] text-2xl tracking-[-0.48px] leading-[31.2px]">
+          Settings
+        </div>
+      </div>
+
+      {/* Settings List */}
+      <div className="flex flex-col w-[344px] items-start gap-[29px] absolute top-[347px] left-6">
+        {settingsItems.map((item, index) => (
+          <div
+            key={item.id}
+            className="flex flex-col items-end gap-[7px] w-full"
+          >
+            <div className="flex items-center justify-between w-full">
+              <div className="inline-flex h-[25px] items-center gap-2.5">
+                {item.icon}
+                <div className="[font-family:'Airbnb_Cereal_App-Book',Helvetica] font-normal text-black text-base tracking-[-0.32px] leading-[20.8px] whitespace-nowrap">
+                  {item.label}
+                </div>
+              </div>
+              <ChevronRightIcon className="w-6 h-6" />
+            </div>
+            <Separator className="w-full" />
+          </div>
+        ))}
+      </div>
+
+      {/* Bottom Navigation */}
+      <div className="flex flex-col w-full items-start absolute bottom-0 left-0">
+        <div className="flex w-full items-center py-2 bg-light-backgrounds-white shadow-divider">
+          {navigationItems.map((item) => (
+            <div
+              key={item.id}
+              className="flex flex-col items-center gap-px flex-1"
+            >
+              {item.icon}
+              <div
+                className={`w-fit font-body-3-${item.isActive ? "header" : "regular"} font-[number:var(--body-3-${item.isActive ? "header" : "regular"}-font-weight)] text-${item.isActive ? "[#222222]" : "dark-texts-low"} text-[length:var(--body-3-${item.isActive ? "header" : "regular"}-font-size)] text-center tracking-[var(--body-3-${item.isActive ? "header" : "regular"}-letter-spacing)] leading-[var(--body-3-${item.isActive ? "header" : "regular"}-line-height)] [font-style:var(--body-3-${item.isActive ? "header" : "regular"}-font-style)]`}
+              >
+                {item.label}
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="relative self-stretch w-full h-7 bg-light-backgrounds-white">
+          <div className="relative w-[134px] h-[5px] top-[15px] left-[130px] bg-[#222222] rounded-[100px]" />
+        </div>
+      </div>
     </div>
   );
 };
 
-// Profile Page (single file)
-const ProfilePage = () => {
-  return (
-    <div className="flex flex-col min-h-screen items-center bg-light-backgrounds-white">
-      {/* Header */}
-      <div className="w-full flex justify-between items-center px-6 py-4 shadow-md bg-white">
-        <h1 className="text-xl font-semibold text-[#222]">Profile</h1>
-        <IconOutlineBell className="w-6 h-6" />
-      </div>
-
-      {/* Profile Avatar */}
-      <div className="mt-6">
-        <img
-          src="https://c.animaapp.com/mb9y7f13hTU61E/img/profile-outline-4.svg"
-          alt="Avatar"
-          className="w-24 h-24 rounded-full border-2 border-[#222]"
-        />
-      </div>
-
-      {/* Profile Info */}
-      <div className="mt-4 text-center">
-        <h2 className="text-lg font-medium text-[#222]">John Doe</h2>
-        <p className="text-sm text-[#717171]">john.doe@example.com</p>
-      </div>
-
-      {/* Buttons */}
-      <div className="mt-6 w-11/12">
-        <button className="w-full py-3 bg-[#222] text-white rounded-lg mb-3">Edit Profile</button>
-        <button className="w-full py-3 bg-gray-200 text-[#222] rounded-lg">Settings</button>
-      </div>
-
-      {/* Spacer */}
-      <div className="flex-grow" />
-
-      {/* TabBar */}
-      <TabBar selection="profile" />
-    </div>
-  );
-};
-
-export default ProfilePage;
+export default Profile;
