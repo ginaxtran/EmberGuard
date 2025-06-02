@@ -1,4 +1,4 @@
-const AUTH_API_URL = import.meta.env.VITE_AUTH_BACKEND_URL || 'http://localhost:5000/api';
+const AUTH_API_URL = import.meta.env.VITE_AUTH_BACKEND_URL || 'https://emberguard-auth-backend.onrender.com/api';
 const MAP_API_URL = import.meta.env.VITE_BACKEND_URL || 'https://emberguard.onrender.com';
 
 class AuthService {
