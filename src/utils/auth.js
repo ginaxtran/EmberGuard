@@ -1,16 +1,17 @@
-const API_BASE_URL = 'http://localhost:5000/api';
+const AUTH_API_URL = import.meta.env.VITE_AUTH_BACKEND_URL || 'http://localhost:5000/api';
+const MAP_API_URL = import.meta.env.VITE_BACKEND_URL || 'https://emberguard.onrender.com';
 
 class AuthService {
   static async register(userData) {
     try {
-      console.log('Attempting registration...');
-      console.log('Data:', { 
+      console.log('Attempting registration with auth backend:', AUTH_API_URL);
+      console.log('Registration data:', { 
         email: userData.email, 
         firstName: userData.firstName,
         lastName: userData.lastName 
       });
 
-      const response = await fetch(`${API_BASE_URL}/auth/register`, {
+      const response = await fetch(`${AUTH_API_URL}/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -27,7 +28,6 @@ class AuthService {
         localStorage.setItem('userMode', 'authenticated');
         
         console.log('Registration successful, data stored');
-        console.log('User:', data.user);
         return { success: true, user: data.user, token: data.token };
       } else {
         console.log('Registration failed:', data.message);
@@ -48,10 +48,10 @@ class AuthService {
 
   static async login(credentials) {
     try {
-      console.log('🔄 Attempting login...');
-      console.log('📝 Email:', credentials.email);
+      console.log('Attempting login with auth backend:', AUTH_API_URL);
+      console.log('Login data:', { email: credentials.email });
 
-      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+      const response = await fetch(`${AUTH_API_URL}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -60,7 +60,7 @@ class AuthService {
       });
 
       const data = await response.json();
-      console.log('📊 Login response:', data);
+      console.log('Login response:', data);
       
       if (data.success) {
         localStorage.setItem('token', data.token);
@@ -68,7 +68,6 @@ class AuthService {
         localStorage.setItem('userMode', 'authenticated');
         
         console.log('Login successful, data stored');
-        console.log('User:', data.user);
         return { success: true, user: data.user, token: data.token };
       } else {
         console.log('Login failed:', data.message);
@@ -95,9 +94,9 @@ class AuthService {
         return null;
       }
 
-      console.log('🔄 Fetching current user...');
+      console.log('Fetching current user from auth backend:', AUTH_API_URL);
 
-      const response = await fetch(`${API_BASE_URL}/auth/me`, {
+      const response = await fetch(`${AUTH_API_URL}/auth/me`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -125,11 +124,9 @@ class AuthService {
     try {
       const token = this.getToken();
       
-      console.log('🔄 Logging out...');
-
       if (token) {
         try {
-          await fetch(`${API_BASE_URL}/auth/logout`, {
+          await fetch(`${AUTH_API_URL}/auth/logout`, {
             method: 'POST',
             headers: {
               'Authorization': `Bearer ${token}`,
@@ -145,7 +142,7 @@ class AuthService {
       localStorage.removeItem('user');
       localStorage.removeItem('userMode');
       
-      console.log('Logout complete, all data cleared');
+      console.log('Logout successful, all data cleared');
     } catch (error) {
       console.error('Logout error:', error);
       localStorage.removeItem('token');
@@ -154,12 +151,51 @@ class AuthService {
     }
   }
 
+  static async updateProfilePicture(profilePictureData) {
+    try {
+      const token = this.getToken();
+      if (!token) {
+        return { success: false, message: 'Not authenticated' };
+      }
+
+      console.log('Updating profile picture via auth backend');
+
+      const response = await fetch(`${AUTH_API_URL}/auth/profile-picture`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(profilePictureData)
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        const currentUser = this.getStoredUser();
+        if (currentUser) {
+          currentUser.profilePicture = data.profilePicture;
+          localStorage.setItem('user', JSON.stringify(currentUser));
+        }
+        console.log('Profile picture updated successfully');
+        return { success: true, profilePicture: data.profilePicture };
+      } else {
+        console.log('Profile picture update failed:', data.message);
+        return { success: false, message: data.message };
+      }
+    } catch (error) {
+      console.error('Profile picture update error:', error);
+      return { 
+        success: false, 
+        message: 'Network error while updating profile picture' 
+      };
+    }
+  }
+
   static isAuthenticated() {
     const token = this.getToken();
     const user = this.getStoredUser();
-    const isAuth = !!(token && user);
-    console.log('🔍 Authentication check:', isAuth);
-    return isAuth;
+    return !!(token && user);
   }
 
   static getStoredUser() {
@@ -180,12 +216,68 @@ class AuthService {
     return localStorage.getItem('userMode') || 'guest';
   }
 
+  static getBackendURLs() {
+    return {
+      auth: AUTH_API_URL,
+      map: MAP_API_URL
+    };
+  }
+
   static debugAuthState() {
-    console.log('Token:', this.getToken() ? 'Present' : 'Missing');
+    console.log('Auth Backend URL:', AUTH_API_URL);
+    console.log('Map Backend URL:', MAP_API_URL);
+    console.log('Token:', this.getToken());
     console.log('User:', this.getStoredUser());
     console.log('User Mode:', this.getUserMode());
     console.log('Is Authenticated:', this.isAuthenticated());
   }
+
+  static async testAuthBackend() {
+    try {
+      console.log('Testing auth backend connection...');
+      const response = await fetch(`${AUTH_API_URL}/auth/test`);
+      const data = await response.json();
+      console.log('Auth backend test result:', data);
+      return data;
+    } catch (error) {
+      console.error('Auth backend test failed:', error);
+      return { success: false, error: error.message };
+    }
+  }
+
+  static async testMapBackend() {
+    try {
+      console.log('Testing map backend connection...');
+      const response = await fetch(`${MAP_API_URL}/api/health`);
+      const data = await response.json();
+      console.log('Map backend test result:', data);
+      return data;
+    } catch (error) {
+      console.error('Map backend test failed:', error);
+      return { success: false, error: error.message };
+    }
+  }
+
+  static async testAllBackends() {
+    console.log('=== TESTING ALL BACKENDS ===');
+    
+    const authTest = await this.testAuthBackend();
+    const mapTest = await this.testMapBackend();
+    
+    console.log('Auth Backend Result:', authTest);
+    console.log('Map Backend Result:', mapTest);
+    
+    return {
+      auth: authTest,
+      map: mapTest,
+      bothWorking: authTest.success && mapTest.success
+    };
+  }
 }
 
 export default AuthService;
+
+export const BACKEND_URLS = {
+  AUTH: AUTH_API_URL,
+  MAP: MAP_API_URL
+};
