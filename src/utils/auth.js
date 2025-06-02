@@ -1,7 +1,45 @@
-const AUTH_API_URL = import.meta.env.VITE_AUTH_BACKEND_URL || 'https://emberguard-auth-backend.onrender.com/api';
+const AUTH_API_URL = import.meta.env.VITE_AUTH_BACKEND_URL || 'http://localhost:5000/api';
 const MAP_API_URL = import.meta.env.VITE_BACKEND_URL || 'https://emberguard.onrender.com';
 
 class AuthService {
+  static async makeRequest(url, options = {}) {
+    try {
+      console.log(`Making request to: ${url}`);
+      console.log('Request options:', options);
+      
+      const response = await fetch(url, {
+        ...options,
+        headers: {
+          'Content-Type': 'application/json',
+          ...options.headers,
+        },
+      });
+
+      if (!response.ok) {
+        console.error(`HTTP Error: ${response.status} ${response.statusText}`);
+        
+        // Handle specific CORS errors
+        if (response.status === 0 || response.type === 'opaque') {
+          throw new Error('CORS error: Unable to connect to server. Please check if the backend is running and CORS is configured correctly.');
+        }
+      }
+
+      const data = await response.json();
+      console.log('Response data:', data);
+      return data;
+      
+    } catch (error) {
+      console.error('Request failed:', error);
+      
+      // Handle network errors (often CORS-related)
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        throw new Error('Network error: Unable to connect to server. This might be a CORS issue or the server might be down.');
+      }
+      
+      throw error;
+    }
+  }
+
   static async register(userData) {
     try {
       console.log('Attempting registration with auth backend:', AUTH_API_URL);
@@ -11,16 +49,10 @@ class AuthService {
         lastName: userData.lastName 
       });
 
-      const response = await fetch(`${AUTH_API_URL}/auth/register`, {
+      const data = await this.makeRequest(`${AUTH_API_URL}/auth/register`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify(userData)
       });
-
-      const data = await response.json();
-      console.log('Registration response:', data);
       
       if (data.success) {
         localStorage.setItem('token', data.token);
@@ -41,7 +73,7 @@ class AuthService {
       console.error('Registration network error:', error);
       return { 
         success: false, 
-        message: 'Network error. Please check your connection and try again.' 
+        message: error.message || 'Network error. Please check your connection and try again.' 
       };
     }
   }
@@ -51,16 +83,10 @@ class AuthService {
       console.log('Attempting login with auth backend:', AUTH_API_URL);
       console.log('Login data:', { email: credentials.email });
 
-      const response = await fetch(`${AUTH_API_URL}/auth/login`, {
+      const data = await this.makeRequest(`${AUTH_API_URL}/auth/login`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify(credentials)
       });
-
-      const data = await response.json();
-      console.log('Login response:', data);
       
       if (data.success) {
         localStorage.setItem('token', data.token);
@@ -81,7 +107,7 @@ class AuthService {
       console.error('Login network error:', error);
       return { 
         success: false, 
-        message: 'Network error. Please check your connection and try again.' 
+        message: error.message || 'Network error. Please check your connection and try again.' 
       };
     }
   }
@@ -96,13 +122,11 @@ class AuthService {
 
       console.log('Fetching current user from auth backend:', AUTH_API_URL);
 
-      const response = await fetch(`${AUTH_API_URL}/auth/me`, {
+      const data = await this.makeRequest(`${AUTH_API_URL}/auth/me`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
       });
-
-      const data = await response.json();
       
       if (data.success) {
         localStorage.setItem('user', JSON.stringify(data.user));
@@ -120,13 +144,14 @@ class AuthService {
     }
   }
 
+  // Rest of your methods remain the same...
   static async logout() {
     try {
       const token = this.getToken();
       
       if (token) {
         try {
-          await fetch(`${AUTH_API_URL}/auth/logout`, {
+          await this.makeRequest(`${AUTH_API_URL}/auth/logout`, {
             method: 'POST',
             headers: {
               'Authorization': `Bearer ${token}`,
@@ -148,47 +173,6 @@ class AuthService {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       localStorage.removeItem('userMode');
-    }
-  }
-
-  static async updateProfilePicture(profilePictureData) {
-    try {
-      const token = this.getToken();
-      if (!token) {
-        return { success: false, message: 'Not authenticated' };
-      }
-
-      console.log('Updating profile picture via auth backend');
-
-      const response = await fetch(`${AUTH_API_URL}/auth/profile-picture`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(profilePictureData)
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        const currentUser = this.getStoredUser();
-        if (currentUser) {
-          currentUser.profilePicture = data.profilePicture;
-          localStorage.setItem('user', JSON.stringify(currentUser));
-        }
-        console.log('Profile picture updated successfully');
-        return { success: true, profilePicture: data.profilePicture };
-      } else {
-        console.log('Profile picture update failed:', data.message);
-        return { success: false, message: data.message };
-      }
-    } catch (error) {
-      console.error('Profile picture update error:', error);
-      return { 
-        success: false, 
-        message: 'Network error while updating profile picture' 
-      };
     }
   }
 
@@ -224,6 +208,7 @@ class AuthService {
   }
 
   static debugAuthState() {
+    console.log('=== AUTH DEBUG INFO ===');
     console.log('Auth Backend URL:', AUTH_API_URL);
     console.log('Map Backend URL:', MAP_API_URL);
     console.log('Token:', this.getToken());
@@ -235,8 +220,7 @@ class AuthService {
   static async testAuthBackend() {
     try {
       console.log('Testing auth backend connection...');
-      const response = await fetch(`${AUTH_API_URL}/auth/test`);
-      const data = await response.json();
+      const data = await this.makeRequest(`${AUTH_API_URL}/auth/test`);
       console.log('Auth backend test result:', data);
       return data;
     } catch (error) {
@@ -244,40 +228,6 @@ class AuthService {
       return { success: false, error: error.message };
     }
   }
-
-  static async testMapBackend() {
-    try {
-      console.log('Testing map backend connection...');
-      const response = await fetch(`${MAP_API_URL}/api/health`);
-      const data = await response.json();
-      console.log('Map backend test result:', data);
-      return data;
-    } catch (error) {
-      console.error('Map backend test failed:', error);
-      return { success: false, error: error.message };
-    }
-  }
-
-  static async testAllBackends() {
-    console.log('=== TESTING ALL BACKENDS ===');
-    
-    const authTest = await this.testAuthBackend();
-    const mapTest = await this.testMapBackend();
-    
-    console.log('Auth Backend Result:', authTest);
-    console.log('Map Backend Result:', mapTest);
-    
-    return {
-      auth: authTest,
-      map: mapTest,
-      bothWorking: authTest.success && mapTest.success
-    };
-  }
 }
 
 export default AuthService;
-
-export const BACKEND_URLS = {
-  AUTH: AUTH_API_URL,
-  MAP: MAP_API_URL
-};
