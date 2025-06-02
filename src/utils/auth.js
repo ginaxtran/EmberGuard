@@ -18,7 +18,6 @@ class AuthService {
       if (!response.ok) {
         console.error(`HTTP Error: ${response.status} ${response.statusText}`);
         
-        // Handle specific CORS errors
         if (response.status === 0 || response.type === 'opaque') {
           throw new Error('CORS error: Unable to connect to server. Please check if the backend is running and CORS is configured correctly.');
         }
@@ -31,7 +30,6 @@ class AuthService {
     } catch (error) {
       console.error('Request failed:', error);
       
-      // Handle network errors (often CORS-related)
       if (error.name === 'TypeError' && error.message.includes('fetch')) {
         throw new Error('Network error: Unable to connect to server. This might be a CORS issue or the server might be down.');
       }
@@ -144,7 +142,6 @@ class AuthService {
     }
   }
 
-  // Rest of your methods remain the same...
   static async logout() {
     try {
       const token = this.getToken();
@@ -208,7 +205,6 @@ class AuthService {
   }
 
   static debugAuthState() {
-    console.log('=== AUTH DEBUG INFO ===');
     console.log('Auth Backend URL:', AUTH_API_URL);
     console.log('Map Backend URL:', MAP_API_URL);
     console.log('Token:', this.getToken());
@@ -231,3 +227,8 @@ class AuthService {
 }
 
 export default AuthService;
+
+export const BACKEND_URLS = {
+  AUTH: AUTH_API_URL,
+  MAP: MAP_API_URL
+};

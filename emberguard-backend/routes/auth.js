@@ -90,7 +90,6 @@ router.post('/register', [
         lastName: user.lastName,
         email: user.email,
         fullName: user.fullName,
-        profilePicture: user.profilePicture,
         createdAt: user.createdAt
       }
     });
@@ -171,7 +170,6 @@ router.post('/login', [
         lastName: user.lastName,
         email: user.email,
         fullName: user.fullName,
-        profilePicture: user.profilePicture,
         lastLogin: user.lastLogin
       }
     });
@@ -197,7 +195,6 @@ router.get('/me', authMiddleware, async (req, res) => {
         lastName: req.user.lastName,
         email: req.user.email,
         fullName: req.user.fullName,
-        profilePicture: req.user.profilePicture,
         lastLogin: req.user.lastLogin,
         createdAt: req.user.createdAt
       }

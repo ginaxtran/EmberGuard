@@ -27,10 +27,6 @@ const userSchema = new mongoose.Schema({
     required: [true, 'Password is required'],
     minlength: [6, 'Password must be at least 6 characters']
   },
-  profilePicture: {
-    type: String,
-    default: '/profilepic.png'
-  },
   lastLogin: {
     type: Date,
     default: Date.now
@@ -40,7 +36,6 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.pre('save', async function(next) {
-
   if (!this.isModified('password')) return next();
   
   try {
