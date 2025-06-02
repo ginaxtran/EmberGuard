@@ -2,6 +2,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import Onboarding from './components/Onboarding';
 import './style.css';
 
 import App from './components/App.jsx';
@@ -18,6 +19,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="/" element={<App />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/admin/housing" element={<HousingDashboard />} />
+          <Route path="/onboarding" element={<Onboarding />} />
         </Routes>
       </BrowserRouter>
     </GoogleOAuthProvider>

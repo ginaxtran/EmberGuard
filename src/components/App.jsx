@@ -1,15 +1,32 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Register from './Register';
 import Login from './Login';
 import Onboarding from './Onboarding';
+import Dashboard from './Dashboard';
 
 function App() {
   const [showRegister, setShowRegister] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [isInApp, setIsInApp] = useState(false);
   const [userMode, setUserMode] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname === '/dashboard') {
+      setIsInApp(true);
+      const savedUserMode = localStorage.getItem('userMode') || 'guest';
+      setUserMode(savedUserMode);
+    } else if (location.pathname === '/onboarding') {
+      setShowOnboarding(true);
+      setIsInApp(false);
+    } else {
+      setIsInApp(false);
+      setShowOnboarding(false);
+    }
+  }, [location.pathname]);
 
   const handleCloseRegister = () => {
     setShowRegister(false);
@@ -21,6 +38,7 @@ function App() {
 
   const handleCloseOnboarding = () => {
     setShowOnboarding(false);
+    navigate('/dashboard?page=map');
   };
 
   const handleSwitchToLogin = () => {
@@ -37,6 +55,8 @@ function App() {
     setShowRegister(false);
     setShowOnboarding(true);
     setUserMode('guest');
+    localStorage.setItem('userMode', 'guest');
+    navigate('/onboarding');
   };
 
   const handleContinue = () => {
@@ -45,15 +65,31 @@ function App() {
 
   const handleOnboardingSkip = () => {
     setShowOnboarding(false);
+    setIsInApp(true);
     navigate('/dashboard?page=map');
-    console.log('Skipping onboarding - entering main app as guest');
+    console.log('Skipping onboarding - entering main app');
   };
 
   const handleOnboardingNext = () => {
     setShowOnboarding(false);
+    setIsInApp(true);
     navigate('/dashboard?page=map');
-    console.log('Onboarding completed - entering main app as guest');
+    console.log('Onboarding completed - entering main app');
   };
+
+  if (showOnboarding || location.pathname === '/onboarding') {
+    return (
+      <Onboarding 
+        onClose={handleCloseOnboarding}
+        onSkip={handleOnboardingSkip}
+        onNext={handleOnboardingNext}
+      />
+    );
+  }
+
+  if (isInApp) {
+    return <Dashboard userMode={userMode} />;
+  }
 
   return (
     <div className="min-vh-100 bg-white d-flex align-items-center justify-content-center p-4">
@@ -93,14 +129,6 @@ function App() {
         <Login 
           onClose={handleCloseLogin}
           onSwitchToRegister={handleSwitchToRegister}
-        />
-      )}
-
-      {showOnboarding && (
-        <Onboarding 
-          onClose={handleCloseOnboarding}
-          onSkip={handleOnboardingSkip}
-          onNext={handleOnboardingNext}
         />
       )}
     </div>

@@ -1,12 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import AuthService from '../utils/auth';
 
-const Onboarding = ({ onClose, onSkip, onNext }) => {
+const Onboarding = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+
+  // Check if user is authenticated
+  useEffect(() => {
+    const userData = AuthService.getStoredUser();
+    setUser(userData);
+  }, []);
 
   const slides = [
     {
-      title: "Welcome to EmberGuard",
-      description: "Stay informed and stay prepared with your all-in-one app for preventing wildfires in Washington.",
+      title: user ? `Welcome to EmberGuard, ${user.firstName}!` : "Welcome to EmberGuard",
+      description: user 
+        ? "Your account has been created successfully! Let's get you set up with everything you need for wildfire preparedness." 
+        : "Stay informed and stay prepared with your all-in-one app for preventing wildfires in Washington.",
       logo: true
     },
     {
@@ -40,7 +52,7 @@ const Onboarding = ({ onClose, onSkip, onNext }) => {
     if (currentSlide < slides.length - 1) {
       setCurrentSlide(currentSlide + 1);
     } else {
-      onNext && onNext();
+      navigate('/dashboard?page=map');
     }
   };
 
@@ -51,7 +63,11 @@ const Onboarding = ({ onClose, onSkip, onNext }) => {
   };
 
   const handleSkip = () => {
-    onSkip && onSkip();
+    navigate('/dashboard?page=map');
+  };
+
+  const handleClose = () => {
+    navigate('/dashboard?page=map');
   };
 
   const renderSlideContent = () => {
@@ -148,7 +164,7 @@ const Onboarding = ({ onClose, onSkip, onNext }) => {
           </button>
           <button 
             className="btn-close" 
-            onClick={onClose}
+            onClick={handleClose}
             aria-label="Close"
             style={{background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', padding: '0.5rem'}}
           >

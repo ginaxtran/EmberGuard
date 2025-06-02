@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import {useGoogleLogin} from '@react-oauth/google';
-import * as jwtDecode from 'jwt-decode';
-import {useNavigate} from "react-router-dom"
+import { useGoogleLogin } from '@react-oauth/google';
+import { useNavigate } from "react-router-dom";
+import AuthService from '../utils/auth';
 
 const Login = ({ onClose, onSwitchToRegister }) => {
   const [formData, setFormData] = useState({
@@ -12,6 +12,7 @@ const Login = ({ onClose, onSwitchToRegister }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [generalError, setGeneralError] = useState('');
   const navigate = useNavigate();
 
   const handleInputChange = (e) => {
@@ -26,6 +27,9 @@ const Login = ({ onClose, onSwitchToRegister }) => {
         ...prev,
         [name]: ''
       }));
+    }
+    if (generalError) {
+      setGeneralError('');
     }
   };
 
@@ -49,57 +53,71 @@ const Login = ({ onClose, onSwitchToRegister }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    console.log('Login form submitted');
+    
     if (!validateForm()) {
+      console.log('Login form validation failed');
       return;
     }
 
     setIsLoading(true);
+    setGeneralError('');
     
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      console.log('Login data:', formData);
-      
-      alert('Login successful!');
-      
-      setFormData({
-        email: '',
-        password: '',
-        rememberMe: false
+      console.log('Calling AuthService.login...');
+      const result = await AuthService.login({
+        email: formData.email,
+        password: formData.password
       });
+      
+      if (result.success) {
+        console.log('Login successful');
+
+        setFormData({
+          email: '',
+          password: '',
+          rememberMe: false
+        });
+
+        onClose();
+        navigate('/dashboard?page=map');
+        
+      } else {
+        console.log('Login failed:', result);
+
+        if (result.errors && Array.isArray(result.errors)) {
+          const backendErrors = {};
+          result.errors.forEach(error => {
+            const field = error.path || error.param;
+            if (field) {
+              backendErrors[field] = error.msg;
+            }
+          });
+          setErrors(backendErrors);
+        }
+
+        setGeneralError(result.message || 'Login failed. Please check your credentials.');
+      }
       
     } catch (error) {
       console.error('Login error:', error);
-      alert('Login failed. Please check your credentials.');
+      setGeneralError('An unexpected error occurred. Please try again.');
     } finally {
       setIsLoading(false);
     }
   };
 
   const googleLogin = useGoogleLogin({
-    onSuccess: (credentialResponse) => {
-      try {
-        const userInfo = jwtDecode(credentialResponse.credential);
-        console.log("Google user info:", userInfo);
-        navigate("/dashboard");
-      } catch (error) {
-        console.error("Error decoding Google token:", error);
-      }
+    onSuccess: (tokenResponse) => {
+      console.log("Google login success:", tokenResponse);
+      localStorage.setItem('userMode', 'authenticated');
+      navigate("/dashboard?page=map");
     },
-    onError: () => {
-      console.log("Google login failed");
+    onError: (error) => {
+      console.log("Google login failed:", error);
+      alert("Google login failed. Please try again.");
     },
   });
-
-  const handleFacebookLogin = () => {
-    console.log('Facebook login clicked');
-    alert('Facebook login would be implemented here');
-  };
-
-  const handleForgotPassword = () => {
-    console.log('Forgot password clicked');
-    alert('Forgot password functionality would be implemented here');
-  };
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -115,6 +133,7 @@ const Login = ({ onClose, onSwitchToRegister }) => {
             type="button"
             aria-label="Close"
             style={{background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', padding: '0.5rem'}}
+            disabled={isLoading}
           >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18 6L6 18M6 6L18 18"/>
@@ -126,6 +145,12 @@ const Login = ({ onClose, onSwitchToRegister }) => {
           <h1 className="form-title mb-2">Sign in to your Account</h1>
           <p className="text-muted mb-4">Enter your email and password to log in</p>
 
+          {generalError && (
+            <div className="alert alert-danger" role="alert">
+              <strong>Error:</strong> {generalError}
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="d-flex flex-column gap-3">
             <div>
               <input
@@ -136,6 +161,7 @@ const Login = ({ onClose, onSwitchToRegister }) => {
                 onChange={handleInputChange}
                 className={`form-control form-control-lg custom-focus ${errors.email ? 'is-invalid' : ''}`}
                 style={{zIndex: 1}}
+                disabled={isLoading}
               />
               {errors.email && <div className="invalid-feedback">{errors.email}</div>}
             </div>
@@ -150,6 +176,7 @@ const Login = ({ onClose, onSwitchToRegister }) => {
                   onChange={handleInputChange}
                   className={`form-control form-control-lg custom-focus ${errors.password ? 'is-invalid' : ''}`}
                   style={{zIndex: 1}}
+                  disabled={isLoading}
                 />
                 <button
                   type="button"
@@ -157,6 +184,8 @@ const Login = ({ onClose, onSwitchToRegister }) => {
                   onClick={togglePasswordVisibility}
                   aria-label={showPassword ? "Hide password" : "Show password"}
                   style={{zIndex: 2}}
+                  disabled={isLoading}
+                  tabIndex={-1}
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                     {showPassword ? (
@@ -178,35 +207,16 @@ const Login = ({ onClose, onSwitchToRegister }) => {
               </div>
               {errors.password && <div className="invalid-feedback">{errors.password}</div>}
             </div>
-
-            <div className="d-flex justify-content-between align-items-center mb-2">
-              <label className="form-check-label d-flex align-items-center remember-me">
-                <input
-                  type="checkbox"
-                  name="rememberMe"
-                  checked={formData.rememberMe}
-                  onChange={handleInputChange}
-                  className="d-none"
-                />
-                <span className="checkmark"></span>
-                Remember me
-              </label>
-              <button 
-                type="button"
-                className="btn btn-link p-0 forgot-password text-decoration-none"
-                onClick={handleForgotPassword}
-              >
-                Forgot Password ?
-              </button>
-            </div>
-
             <button 
               type="submit" 
               className="btn btn-gradient-primary btn-lg w-100 form-submit-btn mt-2"
               disabled={isLoading}
             >
               {isLoading ? (
-                <div className="loading-spinner"></div>
+                <div className="d-flex align-items-center justify-content-center gap-2">
+                  <div className="loading-spinner"></div>
+                  <span>Signing In...</span>
+                </div>
               ) : (
                 'Sign in'
               )}
@@ -223,6 +233,7 @@ const Login = ({ onClose, onSwitchToRegister }) => {
               type="button"
               className="btn btn-outline-secondary social-btn google-btn d-flex align-items-center justify-content-center gap-3"
               onClick={() => googleLogin()}
+              disabled={isLoading}
             >
               <svg width="20" height="20" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -233,16 +244,6 @@ const Login = ({ onClose, onSwitchToRegister }) => {
               Continue with Google
             </button>
 
-            <button 
-              type="button"
-              className="btn btn-outline-secondary social-btn facebook-btn d-flex align-items-center justify-content-center gap-3"
-              onClick={handleFacebookLogin}
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="#1877F2">
-                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-              </svg>
-              Continue with Facebook
-            </button>
           </div>
 
           <div className="text-center">
@@ -252,6 +253,7 @@ const Login = ({ onClose, onSwitchToRegister }) => {
               className="btn btn-link p-0 text-decoration-underline"
               onClick={onSwitchToRegister}
               style={{verticalAlign: 'baseline'}}
+              disabled={isLoading}
             >
               Sign Up
             </button>
